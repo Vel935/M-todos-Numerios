@@ -106,9 +106,9 @@ def res_secante(secante_resultado):
     valores2 = float(secante_entry2_x0.get())#x0
     valores3 = float(secante_entry3_x1.get())#x1
     valores4 = float(secante_entry4_tol.get())#f
-    f = lambda t,y: eval(valores1)
+    f = lambda m: eval(valores1)
     P,I = cs.Secante(f, valores2, valores3, valores4)
-    newton_resultado.config(text=f'La raiz o el cero de la funcion usando newton es {P} y la cantidad de iteraciones en newton es {I}')
+    secante_resultado.config(text=f'La raiz o el cero de la funcion usando newton es {P} y la cantidad de iteraciones en newton es {I}')
 
 def res_falsa_pos(falsa_pos_resultado):
     valores1 = falsa_pos_entry_f.get()#funcion
@@ -133,7 +133,7 @@ def res_newton(newton_resultado):
     valores1 = newton_entry.get()#funcion
     valores2 = float(newton_entry2.get())#x0
     valores3 = float(newton_entry3.get())#tol
-    f = lambda x: eval(valorf)
+    f = lambda x: eval(valores1)
     P,I = cs.newtonR(f, valores2, valores3)
     newton_resultado.config(text=f'La raiz o el cero de la funcion usando newton es {P} y la cantidad de iteraciones en newton es {I}')
 
@@ -220,6 +220,7 @@ def mostrar_interfaz4():
 
 
 def volver_al_menu():
+    
     interfaz_falsa_pos.pack_forget()
     interfaz_biseccion.pack_forget()
     interfaz_secante.pack_forget()
@@ -242,6 +243,7 @@ def volver_al_menu():
 
 # Función para ocultar los botones del menú
 def ocultar_botones():
+
     boton_ceros_biseccion.pack_forget()
     boton_ceros_falsa_pos.pack_forget()
     boton_ceros_newton.pack_forget()
@@ -273,6 +275,7 @@ ventana.geometry("400x300")
 boton_interfaz_interpolacion = tk.Button(ventana, text="Interpolación", command=opciones_interpolacion) #boton interfaz 1
 boton_interfaz2 = tk.Button(ventana, text="Ecucaciones Diferenciales de Orden 1", command=opciones_EDO1)
 boton_interfaz3 = tk.Button(ventana, text="Ceros", command=opciones_ceros)
+boton_interfaz4 = tk.Button(ventana, text="Integrales", command=mostrar_interfaz4)
 boton_interfaz4 = tk.Button(ventana, text="Interfaz 4", command=mostrar_interfaz4)
 
 # Crear botón para volver atrás

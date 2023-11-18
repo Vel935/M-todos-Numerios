@@ -63,4 +63,4 @@ def Secante(f,xo,x1,tol):
         i+=1
     print("La raiz de la funcion usando Secante es", x2)
     print("El numero de iteraciones usandos Secante es", i)
-    return
+    return x2, i
