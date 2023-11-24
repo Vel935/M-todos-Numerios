@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Analisis Numerico</title>
+</head>
+<body>
+    <div class="metodo-container container-flex">
+        <form id="Biseccion" class="container-flex">
+            <input type="text" id="biseccionInput">
+            <input type="number" id="biseccionA" placeholder="Ingrese el punto de inicio del intervalo (a)">
+            <input type="number" id="biseccionB" placeholder="Ingrese el punto de inicio del intervalo (b)">
+            <input type="number" id="biseccionTol" placeholder="Ingrese la tolerancia. Ejm: 0.001">
+            <button type="button" onclick="runBiseccion()">Calcular Bisección</button>
+        </form>
+    </div>
+    <script src="apps.js"></script>
+</body>
+</html>
