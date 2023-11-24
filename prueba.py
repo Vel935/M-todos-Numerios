@@ -4,9 +4,21 @@ import numpy as np
 import Ceros as cs
 import sympy as sp
 import pandas as pd
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.pyplot as plt
 
 # Variable para almacenar los datos ingresados
 dato_ingresado = ''
+def plot_graph(x, y):
+    window = tk.Tk()
+    window.title("Tkinter y Matplotlib")
+    fig, ax = plt.subplots()
+    ax.plot(x, y)
+    ax.set_title('Gráfica de ejemplo')
+
+    canvas = FigureCanvasTkAgg(fig, master=window)
+    canvas_widget = canvas.get_tk_widget()
+    canvas_widget.grid(row=1, column=0, columnspan=2, padx=10, pady=10)
 
 def add_placeholder(entry, placeholder):
     def clear_placeholder(event):
@@ -18,7 +30,6 @@ def add_placeholder(entry, placeholder):
     entry.bind("<FocusIn>", clear_placeholder)
     entry.config(fg="grey")
     
-
 # Funciones para cambiar de interfaz 
 def mostrar_interfaz_poli():
     ocultar_botones()
@@ -150,6 +161,8 @@ def res_sims13(simson13_resultado):
     f = lambda x: eval(valores1)
     P = mt.sims13(f, valores2, valores3, valores4)
     simson13_resultado.config(text=f'La integral por medio de simpson 1/3 es {P}')
+    x_ = np.linspace(0, 1, 1000)
+    plot_graph(x_, f(x_))
 
 
 def res_sims38(simson38_resultado):
@@ -160,7 +173,8 @@ def res_sims38(simson38_resultado):
     f = lambda x: eval(valores1)
     P = mt.sims38(f, valores2, valores3, valores4)
     simson38_resultado.config(text=f'La integral por medio de simpson 3/8 es {P}')
-
+    x_ = np.linspace(0, 1, 1000)
+    plot_graph(x_, f(x_))
 
 def res_trapecio(trapecio_resultado):
     valores1 = trapecio_entry.get()#funcion
@@ -170,7 +184,8 @@ def res_trapecio(trapecio_resultado):
     f = lambda x: eval(valores1)
     P = mt.Trapecio(f, valores2, valores3, valores4)
     trapecio_resultado.config(text=f'La integral por trapecio es {P}')
-
+    x_ = np.linspace(0, 1, 1000)
+    plot_graph(x_, f(x_))
 
 def res_secante(secante_resultado):
     valores1 = secante_entry_f.get()#funcion
@@ -198,6 +213,7 @@ def res_biseccion(biseccion_resultado):
     f = lambda m: eval(valores1)
     P, I = cs.Biseccion(f, valores2, valores3, valores4)
     biseccion_resultado.config(text=f'La raiz o el cero de la funcion usando biseccion es {P} y la cantidad de iteraciones en biseccion es {I}')
+    #plot_graph(I, P)
 
 def res_newton(newton_resultado):  
     #x = sp.symbols('x')
@@ -207,6 +223,7 @@ def res_newton(newton_resultado):
     #f = lambda x: eval(valores1)
     P,I = cs.newtonR(valores1, valores2, valores3)
     newton_resultado.config(text=f'La raiz o el cero de la funcion usando newton es {P} y la cantidad de iteraciones en newton es {I}')
+    #plot_graph(I, P)
 
 def res_MC(MC_resultado):
     valor1 = MC_entry.get()
@@ -217,6 +234,7 @@ def res_MC(MC_resultado):
     yd = np.array(valores2)
     P, X = mt.MC(xd, yd)
     MC_resultado.config(text=f'El polinomio interpolante es P(x) = {X}')
+    plot_graph(xd, yd)
 
 def res_euler(euler_resultado):
     valorf = euler_entry3_f.get()
@@ -227,7 +245,8 @@ def res_euler(euler_resultado):
     f = lambda t,y: eval(valorf)
     t, eu = mt.Euler(f, valora, valorb, valor_h, valor_co)
     euler_resultado.config(text=f'El polinomio interpolante es P(x) = {eu}')
-    
+    plot_graph(t, eu)
+
 def res_euler2(euler2_resultado):
     valorf0 = euler2_entry_f0.get()
     valorf1 = euler2_entry_f1.get()
@@ -242,6 +261,7 @@ def res_euler2(euler2_resultado):
     D = { "Tiempo":t, 'X':P[:,0], 'Y':P[:,1]}
     D = pd.DataFrame(data=D)
     euler2_resultado.config(text=f'{D}')
+    plot_graph(t, P)
     
 def res_rk41(rk41_resultado):
     valorf = rk41_entry3_f.get()
@@ -252,6 +272,7 @@ def res_rk41(rk41_resultado):
     f = lambda t,y: eval(valorf)
     t, rk = mt.Runge(f, valora, valorb, valor_h, valor_co)
     rk41_resultado.config(text=f'El polinomio interpolante es P(x) = {rk}')
+    plot_graph(t, rk)
 
 def res_rk42(rk42_resultado):
     valorf0 = rk42_entry_f0.get()
@@ -269,7 +290,7 @@ def res_rk42(rk42_resultado):
     D = pd.DataFrame(data=D)
     
     rk42_resultado.config(text=f'{D}')
-     
+    plot_graph(t, P)
 
 def res_lagrange(lg_resultado):
     valor1 = lg_entry.get()
@@ -280,6 +301,7 @@ def res_lagrange(lg_resultado):
     yd = np.array(valores2)
     P = mt.Pol_Lagrange(xd, yd)
     lg_resultado.config(text=f'El polinomio interpolante es P(x) = {P}')
+    plot_graph(xd, yd)
 
 
 def res_poli(resultado, lbl_aproximacion):
@@ -293,6 +315,7 @@ def res_poli(resultado, lbl_aproximacion):
     #yd = np.array([1, 1.264911, 1.378404])
     P, X = mt.poli_simple(xd, yd)
     resultado.config(text=f'El polinomio interpolante es P(x) = {X}')
+    plot_graph(xd, yd)
     entry_aprox.pack()
     boton_aproximar = tk.Button(interfaz_poli, text="Resolver polinomio", command=lambda: aprox_poli(P, lbl_aproximacion))
     boton_aproximar.pack()
@@ -560,9 +583,13 @@ interfaz_ceros_mtCerrado.pack_forget()
 interfaz_biseccion = tk.Frame(interfaz_ceros_mtCerrado)
 biseccion_label_dato = tk.Label(interfaz_biseccion, text="Por favor ingrese sus datos: ")
 biseccion_entry_f = tk.Entry(interfaz_biseccion)
+add_placeholder(biseccion_entry_f, "Introduce la función")
 biseccion_entry2_a = tk.Entry(interfaz_biseccion)
+add_placeholder(biseccion_entry2_a, "Introduce a")
 biseccion_entry3_b = tk.Entry(interfaz_biseccion)
+add_placeholder(biseccion_entry3_b, "Introduce b")
 biseccion_entry4_tol = tk.Entry(interfaz_biseccion)
+add_placeholder(biseccion_entry4_tol, "Introduce la toleracia")
 biseccion_resultado= tk.Label(interfaz_biseccion, text="")
 
 #botón para resolver el polinomio
@@ -583,9 +610,13 @@ interfaz_biseccion.pack_forget()
 interfaz_falsa_pos = tk.Frame(interfaz_ceros_mtCerrado)
 falsa_pos_label_dato = tk.Label(interfaz_falsa_pos, text="Por favor ingrese sus datos: ")
 falsa_pos_entry_f = tk.Entry(interfaz_falsa_pos)
+add_placeholder(falsa_pos_entry_f, "Introduce la función")
 falsa_pos_entry2_a = tk.Entry(interfaz_falsa_pos)
+add_placeholder(falsa_pos_entry2_a, "Introduce a")
 falsa_pos_entry3_b = tk.Entry(interfaz_falsa_pos)
+add_placeholder(falsa_pos_entry3_b, "Introduce b")
 falsa_pos_entry4_tol = tk.Entry(interfaz_falsa_pos)
+add_placeholder(falsa_pos_entry4_tol, "Introduce la tolerancia")
 falsa_pos_resultado= tk.Label(interfaz_falsa_pos, text="")
 
 #botón para resolver el polinomio
@@ -607,8 +638,11 @@ interfaz_falsa_pos.pack_forget()
 interfaz_newton = tk.Frame(interfaz_ceros_mtAbierto)
 newton_label_dato = tk.Label(interfaz_newton, text="Por favor ingrese sus datos: ")
 newton_entry = tk.Entry(interfaz_newton)
+add_placeholder(newton_entry, "Introduce la función")
 newton_entry2 = tk.Entry(interfaz_newton)
+add_placeholder(newton_entry2, "Introduce x0")
 newton_entry3 = tk.Entry(interfaz_newton)
+add_placeholder(newton_entry3, "Introduce la tolerancia")
 newton_resultado= tk.Label(interfaz_newton, text="")
 
 #botón para resolver el polinomio
@@ -695,8 +729,11 @@ simson13_label_dato = tk.Label(interfaz_simson13, text="Por favor ingrese sus da
 simson13_entry = tk.Entry(interfaz_simson13)
 add_placeholder(simson13_entry, "Introduce la función")
 simson13_entry2 = tk.Entry(interfaz_simson13)
+add_placeholder(simson13_entry2, "Introduce a")
 simson13_entry3 = tk.Entry(interfaz_simson13)
+add_placeholder(simson13_entry3, "Introduce b")
 simson13_entry4 = tk.Entry(interfaz_simson13)
+add_placeholder(simson13_entry4, "Introduce n")
 simson13_resultado= tk.Label(interfaz_simson13, text="")
 
 #botón para resolver el polinomio
@@ -719,9 +756,13 @@ interfaz_simson13.pack_forget()
 interfaz_secante = tk.Frame(interfaz_ceros_mtAbierto)
 secante_label_dato = tk.Label(interfaz_secante, text="Por favor ingrese sus datos: ")
 secante_entry_f = tk.Entry(interfaz_secante)
+add_placeholder(secante_entry_f, "Introduce la función")
 secante_entry2_x0 = tk.Entry(interfaz_secante)
+add_placeholder(secante_entry2_x0, "Introduce x0")
 secante_entry3_x1 = tk.Entry(interfaz_secante)
+add_placeholder(secante_entry3_x1, "Introduce x1")
 secante_entry4_tol = tk.Entry(interfaz_secante)
+add_placeholder(secante_entry4_tol, "Introduce la tolerancia")
 secante_resultado = tk.Label(interfaz_secante, text="")
 
 #botón para resolver el polinomio
