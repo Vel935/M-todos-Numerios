@@ -3,7 +3,7 @@ import metodos as mt
 import numpy as np
 import Ceros as cs
 import sympy as sp
-
+import pandas as pd
 
 # Variable para almacenar los datos ingresados
 dato_ingresado = ''
@@ -45,6 +45,16 @@ def mostrar_interfaz_rk41():
     interfaz_rk41.pack()
     boton_volver.pack()
 
+def mostrar_interfaz_rk42():
+    ocultar_botones()
+    interfaz_rk42.pack()
+    boton_volver.pack()
+
+def mostrar_interfaz_euler2():
+    ocultar_botones()
+    interfaz_euler2.pack()
+    boton_volver.pack()
+
 def mostrar_interfaz_ceros_abiertos():
     ocultar_botones()
     interfaz_ceros_mtAbierto.pack()
@@ -79,12 +89,35 @@ def mostrar_interfaz_falsa_pos():
     interfaz_falsa_pos.pack()
     boton_volver.pack()
 
+def mostrar_interfaz_trapecio():
+    ocultar_botones()
+    interfaz_Trapecio.pack()
+    boton_volver.pack()
+
+def mostrar_interfaz_simson13():
+    ocultar_botones()
+    interfaz_simson13.pack()
+    boton_volver.pack()
+
+def mostrar_interfaz_simson38():
+    ocultar_botones()
+    interfaz_simson38.pack()
+    boton_volver.pack()
+
 def opciones_EDO1():
     ocultar_botones()
     interfaz_EDO1.pack()
     boton_euler1.pack()
     boton_rk41.pack()
     boton_volver.pack()
+
+def opciones_EDO2():
+    ocultar_botones()
+    interfaz_EDO2.pack()
+    boton_euler2.pack()
+    boton_rk42.pack()
+    boton_volver.pack()
+
 
 def opciones_interpolacion():
     ocultar_botones()
@@ -100,6 +133,44 @@ def opciones_ceros():
     boton_ceros_mtAbierto.pack()
     boton_ceros_mtCerrado.pack()
     boton_volver.pack()
+
+def opciones_integracion():
+    ocultar_botones()
+    interfaz_Integracion.pack()
+    boton_integracion_simson13.pack()
+    boton_integracion_simson38.pack()
+    boton_integracion_trapecios.pack()
+    boton_volver.pack()
+
+def res_sims13(simson13_resultado):
+    valores1 = simson13_entry.get()#funcion
+    valores2 = float(simson13_entry2.get())#a
+    valores3 = float(simson13_entry3.get())#b
+    valores4 = int(simson13_entry4.get())#n
+    f = lambda x: eval(valores1)
+    P = mt.sims13(f, valores2, valores3, valores4)
+    simson13_resultado.config(text=f'La integral por medio de simpson 1/3 es {P}')
+
+
+def res_sims38(simson38_resultado):
+    valores1 = simson38_entry.get()#funcion
+    valores2 = float(simson38_entry2.get())#a
+    valores3 = float(simson38_entry3.get())#b
+    valores4 = int(simson38_entry4.get())#n
+    f = lambda x: eval(valores1)
+    P = mt.sims38(f, valores2, valores3, valores4)
+    simson38_resultado.config(text=f'La integral por medio de simpson 3/8 es {P}')
+
+
+def res_trapecio(trapecio_resultado):
+    valores1 = trapecio_entry.get()#funcion
+    valores2 = float(trapecio_entry2.get())#a
+    valores3 = float(trapecio_entry3.get())#b
+    valores4 = int(trapecio_entry4.get())#n
+    f = lambda x: eval(valores1)
+    P = mt.Trapecio(f, valores2, valores3, valores4)
+    trapecio_resultado.config(text=f'La integral por trapecio es {P}')
+
 
 def res_secante(secante_resultado):
     valores1 = secante_entry_f.get()#funcion
@@ -133,8 +204,8 @@ def res_newton(newton_resultado):
     valores1 = newton_entry.get()#funcion
     valores2 = float(newton_entry2.get())#x0
     valores3 = float(newton_entry3.get())#tol
-    f = lambda x: eval(valores1)
-    P,I = cs.newtonR(f, valores2, valores3)
+    #f = lambda x: eval(valores1)
+    P,I = cs.newtonR(valores1, valores2, valores3)
     newton_resultado.config(text=f'La raiz o el cero de la funcion usando newton es {P} y la cantidad de iteraciones en newton es {I}')
 
 def res_MC(MC_resultado):
@@ -153,14 +224,25 @@ def res_euler(euler_resultado):
     valorb = float(euler_entry2_b.get())
     valor_h = float(euler_entry5_h.get())
     valor_co = float(euler_entry4_co.get())
-    
-
-   
     f = lambda t,y: eval(valorf)
     t, eu = mt.Euler(f, valora, valorb, valor_h, valor_co)
     euler_resultado.config(text=f'El polinomio interpolante es P(x) = {eu}')
     
-
+def res_euler2(euler2_resultado):
+    valorf0 = euler2_entry_f0.get()
+    valorf1 = euler2_entry_f1.get()
+    valora = float(euler2_entry_a.get())
+    valorb = float(euler2_entry2_b.get())
+    valor_h = float(euler2_entry5_h.get())
+    valor_co = eval(euler2_entry4_co.get())
+    f0 = lambda x,v: eval(valorf0)
+    f1 = lambda x,v: eval(valorf1)
+    t, P = mt.euler_ED2(valorf0, valorf1, valora, valorb, valor_h, valor_co)
+    P = np.array(P)
+    D = { "Tiempo":t, 'X':P[:,0], 'Y':P[:,1]}
+    D = pd.DataFrame(data=D)
+    euler2_resultado.config(text=f'{D}')
+    
 def res_rk41(rk41_resultado):
     valorf = rk41_entry3_f.get()
     valora = float(rk41_entry_a.get())
@@ -170,7 +252,24 @@ def res_rk41(rk41_resultado):
     f = lambda t,y: eval(valorf)
     t, rk = mt.Runge(f, valora, valorb, valor_h, valor_co)
     rk41_resultado.config(text=f'El polinomio interpolante es P(x) = {rk}')
+
+def res_rk42(rk42_resultado):
+    valorf0 = rk42_entry_f0.get()
+    valorf1 = rk42_entry_f1.get()
+    valora = float(rk42_entry_a.get())
+    valorb = float(rk42_entry2_b.get())
+    valor_h = float(rk42_entry5_h.get())
+    valor_co = eval(rk42_entry4_co.get())
+    f0 = lambda x,v: eval(valorf0)
+    f1 = lambda x,v: eval(valorf1)
     
+    t, P = mt.rk42_ED2(valorf0, valorf1, valora, valorb, valor_h, valor_co)
+    P = np.array(P)
+    D = { "Tiempo":t, 'X':P[:,0], 'Y':P[:,1]}
+    D = pd.DataFrame(data=D)
+    
+    rk42_resultado.config(text=f'{D}')
+     
 
 def res_lagrange(lg_resultado):
     valor1 = lg_entry.get()
@@ -213,14 +312,12 @@ def mostrar_interfaz3():
     #interfaz3.pack()
     boton_volver.pack()
 
-def mostrar_interfaz4():
-    ocultar_botones()
-    interfaz4.pack()
-    boton_volver.pack()
-
 
 def volver_al_menu():
-    
+    interfaz_simson13.pack_forget()
+    interfaz_simson38.pack_forget()
+    interfaz_Trapecio.pack_forget()
+    interfaz_Integracion.pack_forget()
     interfaz_falsa_pos.pack_forget()
     interfaz_biseccion.pack_forget()
     interfaz_secante.pack_forget()
@@ -229,6 +326,8 @@ def volver_al_menu():
     interfaz_euler.pack_forget()
     interfaz_rk41.pack_forget()
     interfaz_EDO1.pack_forget()
+    interfaz_euler2.pack_forget()
+    interfaz_rk42.pack_forget()
     interfaz_MC.pack_forget()
     interfaz_lagrange.pack_forget()
     interfaz_interpolacion.pack_forget()
@@ -237,13 +336,17 @@ def volver_al_menu():
     interfaz_ceros_mtAbierto.pack_forget()
     interfaz_Ceros.pack_forget()
     interfaz_newton.pack_forget()
-    interfaz4.pack_forget()
+    interfaz_EDO2.pack_forget()
     boton_volver.pack_forget()
     mostrar_botones()
 
 # Función para ocultar los botones del menú
 def ocultar_botones():
-
+    boton_interfaz_EDO2.pack_forget()
+    boton_integracion_simson13.pack_forget()
+    boton_integracion_simson38.pack_forget()
+    boton_integracion_trapecios.pack_forget()
+    boton_interfaz_integracion.pack_forget()
     boton_ceros_biseccion.pack_forget()
     boton_ceros_falsa_pos.pack_forget()
     boton_ceros_newton.pack_forget()
@@ -252,19 +355,23 @@ def ocultar_botones():
     boton_ceros_mtCerrado.pack_forget()
     boton_rk41.pack_forget()
     boton_euler1.pack_forget()
+    boton_rk42.pack_forget()
+    boton_euler2.pack_forget()
     boton_MC.pack_forget()
     boton_lagrange.pack_forget()
     boton_interfaz_interpolacion.pack_forget()
     boton_poli_simple.pack_forget()
     boton_interfaz2.pack_forget()
     boton_interfaz3.pack_forget()
-    boton_interfaz4.pack_forget()
+    
 
 # Función para mostrar los botones del menú
 def mostrar_botones():
     boton_interfaz_interpolacion.pack()
     boton_interfaz2.pack()
+    boton_interfaz_EDO2.pack()
     boton_interfaz3.pack()
+    boton_interfaz_integracion.pack()
     #boton_interfaz4.pack()
 
 # Configuración de la ventana principal
@@ -275,8 +382,8 @@ ventana.geometry("400x300")
 boton_interfaz_interpolacion = tk.Button(ventana, text="Interpolación", command=opciones_interpolacion) #boton interfaz 1
 boton_interfaz2 = tk.Button(ventana, text="Ecucaciones Diferenciales de Orden 1", command=opciones_EDO1)
 boton_interfaz3 = tk.Button(ventana, text="Ceros", command=opciones_ceros)
-boton_interfaz4 = tk.Button(ventana, text="Integrales", command=mostrar_interfaz4)
-boton_interfaz4 = tk.Button(ventana, text="Interfaz 4", command=mostrar_interfaz4)
+boton_interfaz_integracion = tk.Button(ventana, text="Integrales", command=opciones_integracion)
+boton_interfaz_EDO2 = tk.Button(ventana, text="Ecuaciones Diferenciales de Orden 2", command=opciones_EDO2)
 
 # Crear botón para volver atrás
 boton_volver = tk.Button(ventana, text="Volver al Menú", command=volver_al_menu)
@@ -517,6 +624,95 @@ interfaz_newton.pack_forget()
 
 ########################
 
+# Interfaz 5 - Integración  
+interfaz_Integracion = tk.Frame(ventana)
+boton_integracion_trapecios = tk.Button(interfaz_Integracion, text="Método de Trapecios", command=mostrar_interfaz_trapecio)
+boton_integracion_simson38 = tk.Button(interfaz_Integracion, text="Metodo de Simson 3/8", command=mostrar_interfaz_simson38)
+boton_integracion_simson13 = tk.Button(interfaz_Integracion, text="Metodo de Simson 1/3", command=mostrar_interfaz_simson13)
+interfaz_Integracion.pack_forget()
+
+########################
+
+# Metodo de Trapecio
+
+interfaz_Trapecio = tk.Frame(interfaz_Integracion)
+trapecio_label_dato = tk.Label(interfaz_Trapecio, text="Por favor ingrese sus datos: ")
+trapecio_entry = tk.Entry(interfaz_Trapecio)
+add_placeholder(trapecio_entry, "Introduce la función")
+trapecio_entry2 = tk.Entry(interfaz_Trapecio)
+add_placeholder(trapecio_entry2, "Introduce a")
+trapecio_entry3 = tk.Entry(interfaz_Trapecio)
+add_placeholder(trapecio_entry3, "Introduce b")
+trapecio_entry4 = tk.Entry(interfaz_Trapecio)
+add_placeholder(trapecio_entry4, "Introduce n")
+trapecio_resultado= tk.Label(interfaz_Trapecio, text="")
+
+#botón para resolver el polinomio
+trapecio_boton_resolver = tk.Button(interfaz_Trapecio, text="Resolver polinomio", command=lambda: res_trapecio(trapecio_resultado))
+
+trapecio_label_dato.pack()
+trapecio_entry.pack()
+trapecio_entry2.pack()
+trapecio_entry3.pack()
+trapecio_entry4.pack()
+trapecio_boton_resolver.pack()
+trapecio_resultado.pack()
+interfaz_Trapecio.pack_forget()
+
+########################
+# Metodo de Simson 3/8
+
+interfaz_simson38 = tk.Frame(interfaz_Integracion)
+simson38_label_dato = tk.Label(interfaz_simson38, text="Por favor ingrese sus datos: ")
+simson38_entry = tk.Entry(interfaz_simson38)
+add_placeholder(simson38_entry, "Introduce la función")
+simson38_entry2 = tk.Entry(interfaz_simson38)
+add_placeholder(simson38_entry2, "Introduce a")
+simson38_entry3 = tk.Entry(interfaz_simson38)
+add_placeholder(simson38_entry3, "Introduce b")
+simson38_entry4 = tk.Entry(interfaz_simson38)
+add_placeholder(simson38_entry4, "Introduce n")
+simson38_resultado= tk.Label(interfaz_simson38, text="")
+
+#botón para resolver el polinomio
+simson38_boton_resolver = tk.Button(interfaz_simson38, text="Resolver polinomio", command=lambda: res_sims38(simson38_resultado))
+
+simson38_label_dato.pack()
+simson38_entry.pack()
+simson38_entry2.pack()
+simson38_entry3.pack()
+simson38_entry4.pack()
+simson38_boton_resolver.pack()
+simson38_resultado.pack()
+interfaz_simson38.pack_forget()
+
+########################
+########################
+# Metodo de Simson 1/3
+
+interfaz_simson13 = tk.Frame(interfaz_Integracion)
+simson13_label_dato = tk.Label(interfaz_simson13, text="Por favor ingrese sus datos: ")
+simson13_entry = tk.Entry(interfaz_simson13)
+add_placeholder(simson13_entry, "Introduce la función")
+simson13_entry2 = tk.Entry(interfaz_simson13)
+simson13_entry3 = tk.Entry(interfaz_simson13)
+simson13_entry4 = tk.Entry(interfaz_simson13)
+simson13_resultado= tk.Label(interfaz_simson13, text="")
+
+#botón para resolver el polinomio
+simson13_boton_resolver = tk.Button(interfaz_simson13, text="Resolver polinomio", command=lambda: res_sims13(simson13_resultado))
+
+simson13_label_dato.pack()
+simson13_entry.pack()
+simson13_entry2.pack()
+simson13_entry3.pack()
+simson13_entry4.pack()
+simson13_boton_resolver.pack()
+simson13_resultado.pack()
+interfaz_simson13.pack_forget()
+
+########################
+
 # Metodo de secante 
 
 
@@ -542,9 +738,82 @@ interfaz_secante.pack_forget()
 
 ###################################################
 
-# Interfaz 4
-interfaz4 = tk.Label(ventana, text="Interfaz 4")
-interfaz4.pack_forget()
+# Interfaz 4  EDO2  EULER Y RK4
 
+interfaz_EDO2 = tk.Frame(ventana)
+boton_euler2 = tk.Button(interfaz_EDO2, text="Metodo de Euler de orden 2", command=mostrar_interfaz_euler2)
+boton_rk42 = tk.Button(interfaz_EDO2, text="Metodo de Runge-Kutta de orden 2", command=mostrar_interfaz_rk42)
+interfaz_EDO2.pack_forget()
+
+######################################################
+
+# Interfaz Runge-Kutta 2
+interfaz_rk42 = tk.Frame(interfaz_EDO2)
+rk42_label_dato = tk.Label(interfaz_rk42, text="Por favor ingrese sus datos: ")
+rk42_entry_a= tk.Entry(interfaz_rk42, fg="grey")
+add_placeholder(rk42_entry_a, "Introduce a")
+rk42_entry2_b = tk.Entry(interfaz_rk42)
+add_placeholder(rk42_entry2_b, "Introduce b")
+rk42_entry_f0 = tk.Entry(interfaz_rk42)
+add_placeholder(rk42_entry_f0, "Introduce la función 1")
+rk42_entry_f1 = tk.Entry(interfaz_rk42)
+add_placeholder(rk42_entry_f1, "Introduce la función 2")
+rk42_entry4_co = tk.Entry(interfaz_rk42)
+add_placeholder(rk42_entry4_co, "Introduce co")
+rk42_entry5_h = tk.Entry(interfaz_rk42)
+add_placeholder(rk42_entry5_h, "Introduce h")
+rk42_resultado= tk.Label(interfaz_rk42, text="")
+
+
+#botón para resolver el polinomio
+rk42_boton_resolver = tk.Button(interfaz_rk42, text="Resolver polinomio", command=lambda: res_rk42(rk42_resultado))
+
+rk42_label_dato.pack()
+rk42_entry_f0.pack()
+rk42_entry_f1.pack()
+rk42_entry_a.pack()
+rk42_entry2_b.pack()
+rk42_entry5_h.pack()
+rk42_entry4_co.pack()
+rk42_boton_resolver.pack()
+rk42_resultado.pack()
+interfaz_rk42.pack_forget()
+
+##############################################
+#########################
+
+# INTERFAZ EULER 2 
+interfaz_euler2 = tk.Frame(interfaz_EDO2)
+euler2_label_dato = tk.Label(interfaz_euler2, text="Por favor ingrese sus datos: ")
+euler2_entry_a= tk.Entry(interfaz_euler2, fg="grey")
+add_placeholder(euler2_entry_a, "Introduce a")
+euler2_entry2_b = tk.Entry(interfaz_euler2)
+add_placeholder(euler2_entry2_b, "Introduce b")
+euler2_entry_f0 = tk.Entry(interfaz_euler2)
+add_placeholder(euler2_entry_f0, "Introduce la función 1")
+euler2_entry_f1 = tk.Entry(interfaz_euler2)
+add_placeholder(euler2_entry_f1, "Introduce la función 2")
+euler2_entry4_co = tk.Entry(interfaz_euler2)
+add_placeholder(euler2_entry4_co, "Introduce co")
+euler2_entry5_h = tk.Entry(interfaz_euler2)
+add_placeholder(euler2_entry5_h, "Introduce h")
+euler2_resultado= tk.Label(interfaz_euler2, text="")
+
+
+#botón para resolver el polinomio
+euler2_boton_resolver = tk.Button(interfaz_euler2, text="Resolver polinomio", command=lambda: res_euler2(euler2_resultado))
+
+euler2_label_dato.pack()
+euler2_entry_f0.pack()
+euler2_entry_f1.pack()
+euler2_entry_a.pack()
+euler2_entry2_b.pack()
+euler2_entry5_h.pack()
+euler2_entry4_co.pack()
+euler2_boton_resolver.pack()
+euler2_resultado.pack()
+interfaz_euler2.pack_forget()
+
+######################################
 ventana.mainloop()
 

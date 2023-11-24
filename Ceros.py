@@ -39,7 +39,9 @@ def falsaPos(f,a,b,tol):
 
 x=sp.symbols("x")
 
-def newtonR(f,xo,tol):
+def newtonR(f_,xo,tol):
+    x = sp.symbols("x")
+    f = eval(f_)
     df=sp.diff(f,x)
     new=x-f/df
     new=sp.lambdify(x,new)
